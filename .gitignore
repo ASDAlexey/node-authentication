@@ -79,3 +79,4 @@ tsconfig.json
 # root karma folders ignore #
 ###################
 /karma-*
+config.js
