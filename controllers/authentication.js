@@ -23,9 +23,8 @@ exports.signup = (req, res, next) => {
     if (!email || !password) {
         return res.status(422).send({ error: 'You must provide email and password' });
     }
-
-    const promise = User.findOne({ email });
-    promise.then((existingUser) => {
+    
+    User.findOne({ email }).then((existingUser) => {
         if (existingUser) return res.status(422).send({ error: 'Email is in use' });
         const user = new User({ email, password });
         const promise = user.save();
