@@ -13,6 +13,10 @@ function tokenForUser(user) {
     );
 }
 
+exports.signin = (req, res) => {
+    res.json({ token: tokenForUser(req.user) });
+};
+
 exports.signup = (req, res, next) => {
     const { email, password } = req.body;
 
@@ -20,14 +24,13 @@ exports.signup = (req, res, next) => {
         return res.status(422).send({ error: 'You must provide email and password' });
     }
 
-    User.findOne({ email }, (err, existingUser) => {
-        if (err) return next(err);
-        if (existingUser) {
-            return res.status(422).send({ error: 'Email is in use' });
-        }
+    const promise = User.findOne({ email });
+    promise.then((existingUser) => {
+        if (existingUser) return res.status(422).send({ error: 'Email is in use' });
         const user = new User({ email, password });
         const promise = user.save();
-
         promise.then(() => res.json({ token: tokenForUser(user) }));
+    }).catch((err) => {
+        next(err);
     });
 };
