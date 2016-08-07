@@ -10,7 +10,7 @@ const localOptions = { usernameField: 'email' };
 const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
     User.findOne({ email }, (err, user) => {
         if (err) return done(err);
-        if (!user) done(null, false);
+        if (!user) return done(null, false);
 
         // compare passwords - is password to equal to user.pasword?
         user.comparePassword(password, (error, isMatch) => {
